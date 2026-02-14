@@ -1,0 +1,2739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>303 Services - Premium Order Tracking</title>
+    <style>
+        /* ============================================
+           GLOBAL RESET & BASE STYLES
+        ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated gradient background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 25%, #16213e 50%, #1a1a2e 75%, #0a0e27 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(88, 101, 242, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 20%, rgba(88, 101, 242, 0.1) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(10, 14, 39, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #7289da 0%, #9d4edd 100%);
+        }
+
+        /* ============================================
+           HEADER & NAVIGATION
+        ============================================ */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(10, 14, 39, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(88, 101, 242, 0.2);
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 50%, #5865f2 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: logoGlow 3s ease infinite;
+            text-shadow: 0 0 30px rgba(88, 101, 242, 0.5);
+            position: relative;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { 
+                filter: drop-shadow(0 0 10px rgba(88, 101, 242, 0.6));
+                background-position: 0% center;
+            }
+            50% { 
+                filter: drop-shadow(0 0 20px rgba(138, 43, 226, 0.8));
+                background-position: 100% center;
+            }
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.3) 0%, rgba(138, 43, 226, 0.3) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(88, 101, 242, 0.5);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-button {
+            padding: 0.6rem 1.5rem;
+            background: rgba(88, 101, 242, 0.1);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .nav-button:hover {
+            background: rgba(88, 101, 242, 0.2);
+            border-color: #5865f2;
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .profile-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid rgba(88, 101, 242, 0.5);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.1);
+            border-color: #5865f2;
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
+        }
+
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 65px;
+            right: 0;
+            background: rgba(15, 20, 45, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 16px;
+            padding: 0.75rem;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+
+        .profile-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        .dropdown-header h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .dropdown-header p {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(88, 101, 242, 0.2);
+            transform: translateX(5px);
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0.5rem 0;
+        }
+
+        /* ============================================
+           MAIN CONTAINER
+        ============================================ */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 120px 2rem 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 50%, #5865f2 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textShimmer 3s ease infinite;
+            letter-spacing: 1px;
+        }
+
+        @keyframes textShimmer {
+            0%, 100% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+        }
+
+        /* ============================================
+           DASHBOARD STATS (For Owner)
+        ============================================ */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .stat-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #5865f2 0%, #8a2be2 100%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(88, 101, 242, 0.5);
+            box-shadow: 0 20px 40px rgba(88, 101, 242, 0.2);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.2) 0%, rgba(138, 43, 226, 0.2) 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* ============================================
+           MENU CARDS GRID
+        ============================================ */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .menu-card {
+            background: rgba(26, 26, 46, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 24px;
+            padding: 2.5rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .menu-card:nth-child(1) { animation-delay: 0.1s; }
+        .menu-card:nth-child(2) { animation-delay: 0.2s; }
+        .menu-card:nth-child(3) { animation-delay: 0.3s; }
+        .menu-card:nth-child(4) { animation-delay: 0.4s; }
+        .menu-card:nth-child(5) { animation-delay: 0.5s; }
+        .menu-card:nth-child(6) { animation-delay: 0.6s; }
+        .menu-card:nth-child(7) { animation-delay: 0.7s; }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-card:hover::before {
+            opacity: 1;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: rgba(88, 101, 242, 0.6);
+            box-shadow: 0 25px 70px rgba(88, 101, 242, 0.35);
+        }
+
+        .menu-card-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(88, 101, 242, 0.2) 0%, rgba(138, 43, 226, 0.2) 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .menu-card:hover .menu-card-icon {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+        }
+
+        .menu-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+
+        .menu-card p {
+            color: rgba(255, 255, 255, 0.6);
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+
+        .premium-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+            color: #000;
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            z-index: 2;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           MODAL STYLES
+        ============================================ */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 1rem;
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(15, 20, 45, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 59, 48, 0.2);
+            border: 1px solid rgba(255, 59, 48, 0.4);
+            color: #fff;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 1.3rem;
+            font-weight: 300;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 59, 48, 0.9);
+            transform: rotate(90deg);
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.5);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        .modal-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* ============================================
+           FORM STYLES
+        ============================================ */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: #5865f2;
+            box-shadow: 0 0 0 4px rgba(88, 101, 242, 0.15);
+            background: rgba(26, 26, 46, 0.95);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .file-upload {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            padding: 2.5rem;
+            background: rgba(26, 26, 46, 0.6);
+            border: 2px dashed rgba(88, 101, 242, 0.3);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload:hover {
+            border-color: #5865f2;
+            background: rgba(88, 101, 242, 0.1);
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.2);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .preview-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(88, 101, 242, 0.6);
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.3);
+        }
+
+        /* ============================================
+           BUTTONS
+        ============================================ */
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(88, 101, 242, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(239, 68, 68, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        .btn-small {
+            padding: 0.6rem 1.25rem;
+            font-size: 0.875rem;
+        }
+
+        /* ============================================
+           TOAST NOTIFICATIONS
+        ============================================ */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: rgba(15, 20, 45, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 16px;
+            padding: 1.25rem 1.75rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 320px;
+            transform: translateX(450px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast-error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast-icon {
+            font-size: 1.75rem;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-message {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* ============================================
+           ORDER STATUS DISPLAY
+        ============================================ */
+        .order-status-card {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .order-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-info p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .status-badge {
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .status-received {
+            background: rgba(59, 130, 246, 0.2);
+            border-color: rgba(59, 130, 246, 0.5);
+            color: #60a5fa;
+        }
+
+        .status-pending {
+            background: rgba(251, 191, 36, 0.2);
+            border-color: rgba(251, 191, 36, 0.5);
+            color: #fbbf24;
+        }
+
+        .status-shipped {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+            color: #a78bfa;
+        }
+
+        .status-delivered {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #10b981;
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+        }
+
+        .status-timeline {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1.25rem;
+            position: relative;
+        }
+
+        .status-item::after {
+            content: '';
+            position: absolute;
+            left: 19px;
+            top: 50px;
+            width: 2px;
+            height: calc(100% + 1.5rem);
+            background: rgba(88, 101, 242, 0.2);
+        }
+
+        .status-item:last-child::after {
+            display: none;
+        }
+
+        .status-indicator {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(26, 26, 46, 0.8);
+            border: 3px solid rgba(88, 101, 242, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .status-indicator.active {
+            background: linear-gradient(135deg, #5865f2 0%, #8a2be2 100%);
+            border-color: #5865f2;
+            box-shadow: 0 0 30px rgba(88, 101, 242, 0.6);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(88, 101, 242, 0.6); }
+            50% { box-shadow: 0 0 40px rgba(88, 101, 242, 0.9); }
+        }
+
+        .status-content h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .status-content p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+
+        .status-date {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* ============================================
+           TABLE STYLES
+        ============================================ */
+        .table-container {
+            background: rgba(26, 26, 46, 0.6);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 20px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin-top: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            padding: 0.75rem 1rem;
+            background: rgba(15, 20, 45, 0.8);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 10px;
+            color: #fff;
+            min-width: 250px;
+            font-size: 0.9rem;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .data-table thead tr {
+            border-bottom: 2px solid rgba(88, 101, 242, 0.3);
+        }
+
+        .data-table th {
+            padding: 1rem;
+            text-align: left;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .data-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(88, 101, 242, 0.1);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* ============================================
+           SUPPORT REQUESTS
+        ============================================ */
+        .support-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .support-item {
+            background: rgba(15, 20, 45, 0.8);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .support-item:hover {
+            border-color: rgba(88, 101, 242, 0.5);
+            background: rgba(88, 101, 242, 0.1);
+        }
+
+        .support-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .support-header h4 {
+            margin-bottom: 0.25rem;
+        }
+
+        .support-header p {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .support-date {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .support-message {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           ORDER HISTORY
+        ============================================ */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .history-item {
+            background: rgba(26, 26, 46, 0.8);
+            border: 1px solid rgba(88, 101, 242, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            border-color: rgba(88, 101, 242, 0.5);
+            transform: translateX(5px);
+        }
+
+        .history-info h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .history-info p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        /* ============================================
+           ANIMATIONS
+        ============================================ */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        /* ============================================
+           LOADING SPINNER
+        ============================================ */
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================
+           EMPTY STATES
+        ============================================ */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        /* ============================================
+           RESPONSIVE
+        ============================================ */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .container {
+                padding: 100px 1rem 2rem;
+            }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .toast {
+                right: 1rem;
+                left: 1rem;
+                min-width: auto;
+            }
+
+            .table-container {
+                padding: 1rem;
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 0.75rem 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .order-header {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                display: none;
+            }
+
+            .search-filter {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .search-input {
+                width: 100%;
+            }
+        }
+
+        /* ============================================
+           UTILITY CLASSES
+        ============================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-1 { margin-top: 1rem; }
+        .mt-2 { margin-top: 2rem; }
+        .mb-1 { margin-bottom: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        .mb-3 { margin-bottom: 3rem; }
+    </style>
+</head>
+<body>
+    <!-- ============================================
+         HEADER
+    ============================================ -->
+    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 3H10V10H3V3Z" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 3H21V10H14V3Z" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M14 14H21V21H14V14Z" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 14H10V21H3V14Z" stroke="url(#grad1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <defs>
+                        <linearGradient id="grad1" x1="3" y1="3" x2="21" y2="21">
+                            <stop offset="0%" stop-color="#5865f2"/>
+                            <stop offset="100%" stop-color="#8a2be2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            303 SERVICES
+        </div>
+        <div class="nav-right">
+            <button class="nav-button hidden" id="loginBtn" onclick="openAccount()">Sign In</button>
+            <button class="nav-button hidden" id="registerBtn" onclick="openCreateAccount()">Register</button>
+            <div class="user-profile hidden" id="userProfileSection">
+                <div class="profile-avatar" id="profileAvatar" onclick="toggleProfileDropdown()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="dropdown-header">
+                        <h4 id="dropdownUsername">User</h4>
+                        <p id="dropdownEmail">user@email.com</p>
+                    </div>
+                    <div class="dropdown-item" onclick="openProfileSettings()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            <path d="M12 1v3m0 16v3M4.22 4.22l2.12 2.12m11.32 11.32l2.12 2.12M1 12h3m16 0h3M4.22 19.78l2.12-2.12m11.32-11.32l2.12-2.12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Profile Settings
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div class="dropdown-item" onclick="confirmLogout()">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M16 17L21 12L16 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Logout
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ============================================
+         MAIN CONTAINER
+    ============================================ -->
+    <div class="container">
+        <div class="hero">
+            <h1>Premium Order Tracking Platform</h1>
+            <p>Track, manage, and monitor your orders with enterprise-grade precision</p>
+        </div>
+
+        <!-- Owner Dashboard Stats (Only visible when logged in as owner) -->
+        <div id="ownerStatsSection" class="hidden">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 7H4C2.89543 7 2 7.89543 2 9V19C2 20.1046 2.89543 21 4 21H20C21.1046 21 22 20.1046 22 19V9C22 7.89543 21.1046 7 20 7Z" stroke="url(#grad2)" stroke-width="2"/>
+                            <path d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21" stroke="url(#grad2)" stroke-width="2"/>
+                            <defs>
+                                <linearGradient id="grad2" x1="2" y1="3" x2="22" y2="21">
+                                    <stop offset="0%" stop-color="#5865f2"/>
+                                    <stop offset="100%" stop-color="#8a2be2"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="10" stroke="url(#grad3)" stroke-width="2"/>
+                            <path d="M12 6v6l4 2" stroke="url(#grad3)" stroke-width="2" stroke-linecap="round"/>
+                            <defs>
+                                <linearGradient id="grad3" x1="2" y1="2" x2="22" y2="22">
+                                    <stop offset="0%" stop-color="#fbbf24"/>
+                                    <stop offset="100%" stop-color="#f59e0b"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="pendingOrders">0</div>
+                    <div class="stat-label">Pending Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.7088 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="url(#grad4)" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M22 4L12 14.01L9 11.01" stroke="url(#grad4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs>
+                                <linearGradient id="grad4" x1="2" y1="2" x2="22" y2="22">
+                                    <stop offset="0%" stop-color="#10b981"/>
+                                    <stop offset="100%" stop-color="#059669"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="deliveredOrders">0</div>
+                    <div class="stat-label">Delivered Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="url(#grad5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M17 8L12 3L7 8M12 3V15" stroke="url(#grad5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <defs>
+                                <linearGradient id="grad5" x1="3" y1="3" x2="21" y2="21">
+                                    <stop offset="0%" stop-color="#8b5cf6"/>
+                                    <stop offset="100%" stop-color="#7c3aed"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </div>
+                    <div class="stat-number" id="supportRequests">0</div>
+                    <div class="stat-label">Support Requests</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Cards -->
+        <div class="menu-grid" id="mainMenuGrid">
+            <div class="menu-card" onclick="openOrderTracking()">
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="url(#grad6)" stroke-width="2"/>
+                        <circle cx="12" cy="10" r="3" stroke="url(#grad6)" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="grad6" x1="3" y1="1" x2="21" y2="23">
+                                <stop offset="0%" stop-color="#5865f2"/>
+                                <stop offset="100%" stop-color="#8a2be2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>Order Tracking</h3>
+                <p>Track your orders in real-time with AWB code</p>
+            </div>
+
+            <div class="menu-card" onclick="openMyAccount()">
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="url(#grad7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="12" cy="7" r="4" stroke="url(#grad7)" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="grad7" x1="4" y1="3" x2="20" y2="21">
+                                <stop offset="0%" stop-color="#5865f2"/>
+                                <stop offset="100%" stop-color="#8a2be2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>My Account</h3>
+                <p>Sign in to your account</p>
+            </div>
+
+            <div class="menu-card" onclick="openCreateAccount()">
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21" stroke="url(#grad8)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="8.5" cy="7" r="4" stroke="url(#grad8)" stroke-width="2"/>
+                        <path d="M20 8V14M23 11H17" stroke="url(#grad8)" stroke-width="2" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="grad8" x1="1" y1="3" x2="23" y2="21">
+                                <stop offset="0%" stop-color="#10b981"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>Create Account</h3>
+                <p>Register a new account</p>
+            </div>
+
+            <div class="menu-card" onclick="openOwnerAccess()">
+                <span class="premium-badge">Admin</span>
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="11" width="18" height="11" rx="2" stroke="url(#grad9)" stroke-width="2"/>
+                        <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="url(#grad9)" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="grad9" x1="3" y1="2" x2="21" y2="22">
+                                <stop offset="0%" stop-color="#ffd700"/>
+                                <stop offset="100%" stop-color="#ff8c00"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>Owner Access</h3>
+                <p>Manage orders and AWB codes</p>
+            </div>
+
+            <div class="menu-card" onclick="openSupportCenter()">
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="url(#grad10)" stroke-width="2"/>
+                        <path d="M9.09 9C9.3251 8.33167 9.78915 7.76811 10.4 7.40913C11.0108 7.05016 11.7289 6.91894 12.4272 7.03871C13.1255 7.15849 13.7588 7.52152 14.2151 8.06353C14.6713 8.60553 14.9211 9.29152 14.92 10C14.92 12 11.92 13 11.92 13" stroke="url(#grad10)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 17H12.01" stroke="url(#grad10)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <defs>
+                            <linearGradient id="grad10" x1="2" y1="2" x2="22" y2="22">
+                                <stop offset="0%" stop-color="#8b5cf6"/>
+                                <stop offset="100%" stop-color="#7c3aed"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>Support Center</h3>
+                <p>Get help and submit support requests</p>
+            </div>
+
+            <div class="menu-card" onclick="openOrderHistory()">
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="url(#grad11)" stroke-width="2"/>
+                        <path d="M12 6v6l4 2" stroke="url(#grad11)" stroke-width="2" stroke-linecap="round"/>
+                        <defs>
+                            <linearGradient id="grad11" x1="2" y1="2" x2="22" y2="22">
+                                <stop offset="0%" stop-color="#ec4899"/>
+                                <stop offset="100%" stop-color="#db2777"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>Order History</h3>
+                <p>View your previous orders</p>
+            </div>
+
+            <div class="menu-card" onclick="openDashboard()">
+                <div class="menu-card-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="3" y="3" width="7" height="7" rx="1" stroke="url(#grad12)" stroke-width="2"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1" stroke="url(#grad12)" stroke-width="2"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1" stroke="url(#grad12)" stroke-width="2"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1" stroke="url(#grad12)" stroke-width="2"/>
+                        <defs>
+                            <linearGradient id="grad12" x1="3" y1="3" x2="21" y2="21">
+                                <stop offset="0%" stop-color="#06b6d4"/>
+                                <stop offset="100%" stop-color="#0891b2"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h3>Dashboard</h3>
+                <p>View your account overview</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         MODALS
+    ============================================ -->
+
+    <!-- Order Tracking Modal -->
+    <div class="modal" id="orderTrackingModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('orderTrackingModal')">×</button>
+            <h2 class="modal-title">Track Your Order</h2>
+            <p class="modal-subtitle">Enter your AWB code to track your order status</p>
+            
+            <div class="form-group">
+                <label class="form-label">AWB Tracking Code</label>
+                <input type="text" class="form-input" id="awbInput" placeholder="Enter your 10-digit AWB code" maxlength="10">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="trackOrder()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                    <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Track Order
+            </button>
+
+            <div id="orderStatusDisplay"></div>
+        </div>
+    </div>
+
+    <!-- My Account (Login) Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('loginModal')">×</button>
+            <h2 class="modal-title">Sign In</h2>
+            <p class="modal-subtitle">Welcome back! Please enter your details</p>
+            
+            <div class="form-group">
+                <label class="form-label">Email or Username</label>
+                <input type="text" class="form-input" id="loginEmailUsername" placeholder="Enter your email or username">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="loginUser()">
+                Sign In
+            </button>
+            <p class="text-center mt-1" style="color: rgba(255, 255, 255, 0.6);">
+                Don't have an account? 
+                <a href="#" onclick="closeModal('loginModal'); openCreateAccount(); return false;" style="color: #5865f2; text-decoration: none; font-weight: 600;">Create Account</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Create Account Modal -->
+    <div class="modal" id="createAccountModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('createAccountModal')">×</button>
+            <h2 class="modal-title">Create Account</h2>
+            <p class="modal-subtitle">Join 303 Services today</p>
+            
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="signupUsername" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="signupEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="signupPassword" placeholder="Create a password (min 6 characters)">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-input" id="signupPasswordConfirm" placeholder="Confirm your password">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="createAccount()">
+                Create Account
+            </button>
+            <p class="text-center mt-1" style="color: rgba(255, 255, 255, 0.6);">
+                Already have an account? 
+                <a href="#" onclick="closeModal('createAccountModal'); openMyAccount(); return false;" style="color: #5865f2; text-decoration: none; font-weight: 600;">Sign In</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Profile Settings Modal -->
+    <div class="modal" id="profileSettingsModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('profileSettingsModal')">×</button>
+            <h2 class="modal-title">Profile Settings</h2>
+            <p class="modal-subtitle">Manage your profile information</p>
+            
+            <div class="form-group">
+                <label class="form-label">Profile Picture</label>
+                <label class="file-upload" for="profilePicInput">
+                    <img id="profilePreview" class="preview-avatar hidden" src="" alt="Profile Preview">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" id="uploadIcon">
+                        <path d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M17 8L12 3L7 8" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M12 3V15" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span style="color: rgba(255, 255, 255, 0.7);">Click to upload profile picture</span>
+                    <input type="file" id="profilePicInput" accept="image/*" onchange="handleProfilePicUpload(event)">
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="profileUsername" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="profileEmail" readonly>
+            </div>
+        </div>
+    </div>
+
+    <!-- Owner Access Modal -->
+    <div class="modal" id="ownerModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <button class="modal-close" onclick="closeModal('ownerModal')">×</button>
+            
+            <!-- Owner Login Form -->
+            <div id="ownerLoginForm">
+                <h2 class="modal-title">Owner Access</h2>
+                <p class="modal-subtitle">Administrator panel login</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-input" id="ownerUsername" placeholder="zews193">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="ownerPassword" placeholder="zewsthegoat193">
+                </div>
+                <button class="btn btn-primary btn-full" onclick="ownerLogin()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M10 17L15 12L10 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M15 12H3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Login as Owner
+                </button>
+            </div>
+
+            <!-- Owner Dashboard -->
+            <div id="ownerDashboard" class="hidden">
+                <h2 class="modal-title">Owner Dashboard</h2>
+                <p class="modal-subtitle">Manage all orders and support requests</p>
+
+                <!-- Create AWB Section -->
+                <div class="form-group">
+                    <label class="form-label">Create New AWB</label>
+                    <div style="display: flex; gap: 1rem;">
+                        <input type="text" class="form-input" id="productName" placeholder="Product name" style="flex: 1;">
+                        <button class="btn btn-success" onclick="createAWB()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Create
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Search and Filter -->
+                <div class="table-header">
+                    <h3>All Orders</h3>
+                    <div class="search-filter">
+                        <input type="text" class="search-input" id="searchAWB" placeholder="Search AWB..." onkeyup="filterAWBTable()">
+                        <select class="form-select" id="filterStatus" onchange="filterAWBTable()" style="padding: 0.75rem 1rem;">
+                            <option value="">All Status</option>
+                            <option value="Order Received">Order Received</option>
+                            <option value="Order Pending">Order Pending</option>
+                            <option value="Order Shipped">Order Shipped</option>
+                            <option value="Order Delivered">Order Delivered</option>
+                            <option value="Order Cancelled">Order Cancelled</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- AWB Table -->
+                <div class="table-container">
+                    <table class="data-table" id="awbTable">
+                        <thead>
+                            <tr>
+                                <th>AWB Code</th>
+                                <th>Product</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="awbTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center" style="padding: 2rem; color: rgba(255,255,255,0.5);">
+                                    No orders yet. Create your first AWB!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Support Requests Section -->
+                <div class="mt-2">
+                    <h3 style="margin-bottom: 1rem;">Support Requests</h3>
+                    <div class="support-list" id="supportRequestsList">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">📭</div>
+                            <p>No support requests yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Status Modal -->
+    <div class="modal" id="updateStatusModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('updateStatusModal')">×</button>
+            <h2 class="modal-title">Update Order Status</h2>
+            
+            <div class="form-group">
+                <label class="form-label">AWB Code</label>
+                <input type="text" class="form-input" id="updateAwbCode" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Product Name</label>
+                <input type="text" class="form-input" id="updateProductName" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Order Status</label>
+                <select class="form-select" id="updateStatus">
+                    <option value="Order Received">Order Received</option>
+                    <option value="Order Pending">Order Pending</option>
+                    <option value="Order Shipped">Order Shipped</option>
+                    <option value="Order Delivered">Order Delivered</option>
+                    <option value="Order Cancelled">Order Cancelled</option>
+                    <option value="custom">Custom Status</option>
+                </select>
+            </div>
+            <div class="form-group hidden" id="customStatusGroup">
+                <label class="form-label">Custom Status Text</label>
+                <input type="text" class="form-input" id="customStatusInput" placeholder="Enter custom status">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="saveStatusUpdate()">
+                Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Edit AWB Modal -->
+    <div class="modal" id="editAwbModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('editAwbModal')">×</button>
+            <h2 class="modal-title">Edit AWB Code</h2>
+            
+            <div class="form-group">
+                <label class="form-label">AWB Code</label>
+                <input type="text" class="form-input" id="editAwbCode" maxlength="10" placeholder="Enter 10-digit AWB">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Product Name</label>
+                <input type="text" class="form-input" id="editProductName" placeholder="Product name">
+            </div>
+            <button class="btn btn-primary btn-full" onclick="saveAwbEdit()">
+                Save Changes
+            </button>
+        </div>
+    </div>
+
+    <!-- Support Center Modal -->
+    <div class="modal" id="supportModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('supportModal')">×</button>
+            <h2 class="modal-title">Support Center</h2>
+            <p class="modal-subtitle">We're here to help! Send us your question or issue</p>
+            
+            <div class="form-group">
+                <label class="form-label">Your Name</label>
+                <input type="text" class="form-input" id="supportName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Your Email</label>
+                <input type="email" class="form-input" id="supportEmail" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Message</label>
+                <textarea class="form-textarea" id="supportMessage" placeholder="Describe your issue or question..."></textarea>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="submitSupportRequest()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Send Request
+            </button>
+        </div>
+    </div>
+
+    <!-- Order History Modal -->
+    <div class="modal" id="orderHistoryModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('orderHistoryModal')">×</button>
+            <h2 class="modal-title">Order History</h2>
+            <p class="modal-subtitle">Your previously tracked orders</p>
+            
+            <div class="history-list" id="historyList">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📦</div>
+                    <p>No order history yet. Start tracking orders!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Modal -->
+    <div class="modal" id="dashboardModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('dashboardModal')">×</button>
+            <h2 class="modal-title">Dashboard</h2>
+            <p class="modal-subtitle">Your account overview</p>
+            
+            <div id="dashboardContent">
+                <div class="empty-state">
+                    <div class="empty-state-icon">📊</div>
+                    <p>Please sign in to view your dashboard</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <button class="modal-close" onclick="closeModal('logoutModal')">×</button>
+            <h2 class="modal-title">Confirm Logout</h2>
+            <p class="modal-subtitle">Are you sure you want to logout?</p>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button class="btn btn-secondary btn-full" onclick="closeModal('logoutModal')">
+                    Cancel
+                </button>
+                <button class="btn btn-danger btn-full" onclick="performLogout()">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <div class="toast-icon" id="toastIcon"></div>
+        <div class="toast-content">
+            <div class="toast-title" id="toastTitle">Success</div>
+            <div class="toast-message" id="toastMessage">Operation completed successfully</div>
+        </div>
+    </div>
+
+    <!-- ============================================
+         JAVASCRIPT
+    ============================================ -->
+    <script>
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+
+        let currentUser = null;
+        let isOwner = false;
+        let currentEditAwb = null;
+
+        const OWNER_CREDENTIALS = {
+            username: 'zews193',
+            password: 'zewsthegoat193'
+        };
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+
+        window.addEventListener('DOMContentLoaded', () => {
+            restoreSession();
+            updateUI();
+            loadOwnerStats();
+        });
+
+        function restoreSession() {
+            // Restore user session
+            const userSession = localStorage.getItem('303_userSession');
+            if (userSession) {
+                currentUser = JSON.parse(userSession);
+            }
+
+            // Restore owner session
+            const ownerSession = localStorage.getItem('303_ownerSession');
+            if (ownerSession === 'true') {
+                isOwner = true;
+            }
+        }
+
+        function updateUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const registerBtn = document.getElementById('registerBtn');
+            const userProfileSection = document.getElementById('userProfileSection');
+            const ownerStatsSection = document.getElementById('ownerStatsSection');
+
+            if (currentUser) {
+                loginBtn.classList.add('hidden');
+                registerBtn.classList.add('hidden');
+                userProfileSection.classList.remove('hidden');
+                
+                document.getElementById('dropdownUsername').textContent = currentUser.username;
+                document.getElementById('dropdownEmail').textContent = currentUser.email;
+
+                if (currentUser.profilePic) {
+                    document.getElementById('profileAvatar').innerHTML = 
+                        `<img src="${currentUser.profilePic}" alt="Profile">`;
+                }
+            } else {
+                loginBtn.classList.remove('hidden');
+                registerBtn.classList.remove('hidden');
+                userProfileSection.classList.add('hidden');
+            }
+
+            if (isOwner) {
+                ownerStatsSection.classList.remove('hidden');
+                loadOwnerStats();
+            } else {
+                ownerStatsSection.classList.add('hidden');
+            }
+        }
+
+        // ============================================
+        // UTILITY FUNCTIONS
+        // ============================================
+
+        function generateRandomAWB() {
+            return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+        }
+
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastIcon = document.getElementById('toastIcon');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toast.className = 'toast show toast-' + type;
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+            
+            if (type === 'success') {
+                toastIcon.innerHTML = '✓';
+            } else {
+                toastIcon.innerHTML = '✕';
+            }
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
+        function shakeElement(element) {
+            element.classList.add('shake');
+            setTimeout(() => {
+                element.classList.remove('shake');
+            }, 500);
+        }
+
+        function getStatusClass(status) {
+            const statusMap = {
+                'Order Received': 'status-received',
+                'Order Pending': 'status-pending',
+                'Order Shipped': 'status-shipped',
+                'Order Delivered': 'status-delivered',
+                'Order Cancelled': 'status-cancelled'
+            };
+            return statusMap[status] || 'status-received';
+        }
+
+        // ============================================
+        // MODAL MANAGEMENT
+        // ============================================
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show');
+            }
+        });
+
+        function toggleProfileDropdown() {
+            document.getElementById('profileDropdown').classList.toggle('show');
+        }
+
+        document.addEventListener('click', (e) => {
+            const profileAvatar = document.getElementById('profileAvatar');
+            const dropdown = document.getElementById('profileDropdown');
+            if (!profileAvatar.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // ============================================
+        // MENU ACTIONS
+        // ============================================
+
+        function openOrderTracking() {
+            openModal('orderTrackingModal');
+            document.getElementById('awbInput').value = '';
+            document.getElementById('orderStatusDisplay').innerHTML = '';
+        }
+
+        function openMyAccount() {
+            if (currentUser) {
+                showToast('Already Logged In', 'You are already signed in', 'success');
+                return;
+            }
+            openModal('loginModal');
+        }
+
+        function openCreateAccount() {
+            if (currentUser) {
+                showToast('Already Logged In', 'You already have an account', 'success');
+                return;
+            }
+            openModal('createAccountModal');
+        }
+
+        function openOwnerAccess() {
+            openModal('ownerModal');
+            if (isOwner) {
+                document.getElementById('ownerLoginForm').classList.add('hidden');
+                document.getElementById('ownerDashboard').classList.remove('hidden');
+                loadAWBTable();
+                loadSupportRequests();
+            } else {
+                document.getElementById('ownerLoginForm').classList.remove('hidden');
+                document.getElementById('ownerDashboard').classList.add('hidden');
+            }
+        }
+
+        function openSupportCenter() {
+            openModal('supportModal');
+            if (currentUser) {
+                document.getElementById('supportName').value = currentUser.username;
+                document.getElementById('supportEmail').value = currentUser.email;
+            }
+        }
+
+        function openOrderHistory() {
+            if (!currentUser) {
+                showToast('Login Required', 'Please sign in to view order history', 'error');
+                return;
+            }
+            openModal('orderHistoryModal');
+            loadOrderHistory();
+        }
+
+        function openDashboard() {
+            if (!currentUser) {
+                showToast('Login Required', 'Please sign in to view dashboard', 'error');
+                return;
+            }
+            openModal('dashboardModal');
+            loadDashboard();
+        }
+
+        function openProfileSettings() {
+            closeModal('profileDropdown');
+            document.getElementById('profileDropdown').classList.remove('show');
+            openModal('profileSettingsModal');
+            document.getElementById('profileUsername').value = currentUser.username;
+            document.getElementById('profileEmail').value = currentUser.email;
+            
+            if (currentUser.profilePic) {
+                document.getElementById('profilePreview').src = currentUser.profilePic;
+                document.getElementById('profilePreview').classList.remove('hidden');
+                document.getElementById('uploadIcon').classList.add('hidden');
+            }
+        }
+
+        // ============================================
+        // AUTHENTICATION
+        // ============================================
+
+        function createAccount() {
+            const username = document.getElementById('signupUsername').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+            if (!username || !email || !password || !passwordConfirm) {
+                showToast('Error', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            if (password.length < 6) {
+                showToast('Error', 'Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showToast('Error', 'Passwords do not match', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('303_users') || '[]');
+            
+            if (users.find(u => u.email === email)) {
+                showToast('Error', 'Email already exists', 'error');
+                return;
+            }
+
+            if (users.find(u => u.username === username)) {
+                showToast('Error', 'Username already exists', 'error');
+                return;
+            }
+
+            const newUser = {
+                username,
+                email,
+                password,
+                createdAt: new Date().toISOString()
+            };
+
+            users.push(newUser);
+            localStorage.setItem('303_users', JSON.stringify(users));
+
+            currentUser = { username, email };
+            localStorage.setItem('303_userSession', JSON.stringify(currentUser));
+
+            updateUI();
+            closeModal('createAccountModal');
+            showToast('Success', 'Account created successfully!', 'success');
+
+            // Clear form
+            document.getElementById('signupUsername').value = '';
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('signupPasswordConfirm').value = '';
+        }
+
+        function loginUser() {
+            const emailUsername = document.getElementById('loginEmailUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!emailUsername || !password) {
+                showToast('Error', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('303_users') || '[]');
+            const user = users.find(u => 
+                (u.email === emailUsername || u.username === emailUsername) && 
+                u.password === password
+            );
+
+            if (user) {
+                currentUser = {
+                    username: user.username,
+                    email: user.email,
+                    profilePic: user.profilePic
+                };
+                localStorage.setItem('303_userSession', JSON.stringify(currentUser));
+                updateUI();
+                closeModal('loginModal');
+                showToast('Success', 'Logged in successfully!', 'success');
+
+                document.getElementById('loginEmailUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            } else {
+                showToast('Error', 'Invalid credentials', 'error');
+                shakeElement(document.getElementById('loginModal').querySelector('.modal-content'));
+            }
+        }
+
+        function confirmLogout() {
+            document.getElementById('profileDropdown').classList.remove('show');
+            openModal('logoutModal');
+        }
+
+        function performLogout() {
+            currentUser = null;
+            isOwner = false;
+            localStorage.removeItem('303_userSession');
+            localStorage.removeItem('303_ownerSession');
+            updateUI();
+            closeModal('logoutModal');
+            showToast('Success', 'Logged out successfully', 'success');
+        }
+
+        function ownerLogin() {
+            const username = document.getElementById('ownerUsername').value.trim();
+            const password = document.getElementById('ownerPassword').value;
+
+            if (username === OWNER_CREDENTIALS.username && password === OWNER_CREDENTIALS.password) {
+                isOwner = true;
+                localStorage.setItem('303_ownerSession', 'true');
+                document.getElementById('ownerLoginForm').classList.add('hidden');
+                document.getElementById('ownerDashboard').classList.remove('hidden');
+                updateUI();
+                loadAWBTable();
+                loadSupportRequests();
+                showToast('Success', 'Owner login successful!', 'success');
+
+                document.getElementById('ownerUsername').value = '';
+                document.getElementById('ownerPassword').value = '';
+            } else {
+                showToast('Error', 'Invalid owner credentials', 'error');
+                shakeElement(document.getElementById('ownerLoginForm'));
+            }
+        }
+
+        // ============================================
+        // PROFILE PICTURE
+        // ============================================
+
+        function handleProfilePicUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 5000000) {
+                    showToast('Error', 'Image must be less than 5MB', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const imageData = e.target.result;
+                    document.getElementById('profilePreview').src = imageData;
+                    document.getElementById('profilePreview').classList.remove('hidden');
+                    document.getElementById('uploadIcon').classList.add('hidden');
+                    
+                    if (currentUser) {
+                        currentUser.profilePic = imageData;
+                        localStorage.setItem('303_userSession', JSON.stringify(currentUser));
+                        
+                        const users = JSON.parse(localStorage.getItem('303_users') || '[]');
+                        const userIndex = users.findIndex(u => u.email === currentUser.email);
+                        if (userIndex !== -1) {
+                            users[userIndex].profilePic = imageData;
+                            localStorage.setItem('303_users', JSON.stringify(users));
+                        }
+                        
+                        updateUI();
+                        showToast('Success', 'Profile picture updated!', 'success');
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ============================================
+        // ORDER TRACKING
+        // ============================================
+
+        function trackOrder() {
+            const awbCode = document.getElementById('awbInput').value.trim();
+
+            if (!awbCode) {
+                showToast('Error', 'Please enter AWB code', 'error');
+                return;
+            }
+
+            if (awbCode.length !== 10 || isNaN(awbCode)) {
+                showToast('Error', 'AWB code must be 10 digits', 'error');
+                shakeElement(document.getElementById('awbInput'));
+                return;
+            }
+
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const order = awbs.find(a => a.code === awbCode);
+
+            if (order) {
+                displayOrderStatus(order);
+                showToast('Success', 'Order found!', 'success');
+                
+                // Save to user's order history
+                if (currentUser) {
+                    saveToOrderHistory(order);
+                }
+            } else {
+                showToast('Error', 'Invalid AWB code', 'error');
+                shakeElement(document.getElementById('awbInput'));
+                document.getElementById('orderStatusDisplay').innerHTML = '';
+            }
+        }
+
+        function displayOrderStatus(order) {
+            const statusDisplay = document.getElementById('orderStatusDisplay');
+            
+            const allStatuses = [
+                'Order Received',
+                'Order Pending',
+                'Order Shipped',
+                'Order Delivered'
+            ];
+
+            let currentStatusIndex = allStatuses.indexOf(order.status);
+            if (currentStatusIndex === -1) {
+                // Custom status
+                currentStatusIndex = 0;
+            }
+
+            const createdDate = new Date(order.createdAt).toLocaleString();
+
+            let html = `
+                <div class="order-status-card">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <h3>Order Details</h3>
+                            <p><strong>AWB:</strong> ${order.code}</p>
+                            <p><strong>Product:</strong> ${order.productName}</p>
+                            <p><strong>Created:</strong> ${createdDate}</p>
+                        </div>
+                        <div class="status-badge ${getStatusClass(order.status)}">
+                            ${order.status}
+                        </div>
+                    </div>
+                    <div class="status-timeline">
+            `;
+
+            if (allStatuses.includes(order.status)) {
+                allStatuses.forEach((status, index) => {
+                    const isActive = index <= currentStatusIndex;
+                    html += `
+                        <div class="status-item">
+                            <div class="status-indicator ${isActive ? 'active' : ''}">
+                                ${isActive ? '✓' : ''}
+                            </div>
+                            <div class="status-content">
+                                <h4>${status}</h4>
+                                <p>${isActive ? 'Completed' : 'Pending'}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // Custom status display
+                html += `
+                    <div class="status-item">
+                        <div class="status-indicator active">✓</div>
+                        <div class="status-content">
+                            <h4>${order.status}</h4>
+                            <p>Current Status</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            statusDisplay.innerHTML = html;
+        }
+
+        function saveToOrderHistory(order) {
+            const history = JSON.parse(localStorage.getItem(`303_history_${currentUser.email}`) || '[]');
+            
+            if (!history.find(h => h.code === order.code)) {
+                history.push({
+                    code: order.code,
+                    productName: order.productName,
+                    status: order.status,
+                    trackedAt: new Date().toISOString()
+                });
+                localStorage.setItem(`303_history_${currentUser.email}`, JSON.stringify(history));
+            }
+        }
+
+        function loadOrderHistory() {
+            const historyList = document.getElementById('historyList');
+            const history = JSON.parse(localStorage.getItem(`303_history_${currentUser.email}`) || '[]');
+
+            if (history.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📦</div>
+                        <p>No order history yet. Start tracking orders!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            history.reverse().forEach(item => {
+                const date = new Date(item.trackedAt).toLocaleDateString();
+                html += `
+                    <div class="history-item">
+                        <div class="history-info">
+                            <h4>${item.code}</h4>
+                            <p>${item.productName} • ${item.status}</p>
+                        </div>
+                        <div class="status-badge ${getStatusClass(item.status)}">
+                            ${date}
+                        </div>
+                    </div>
+                `;
+            });
+
+            historyList.innerHTML = html;
+        }
+
+        // ============================================
+        // OWNER FUNCTIONS
+        // ============================================
+
+        function createAWB() {
+            const productName = document.getElementById('productName').value.trim();
+
+            if (!productName) {
+                showToast('Error', 'Please enter product name', 'error');
+                return;
+            }
+
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            
+            let newAWB;
+            let attempts = 0;
+            do {
+                newAWB = generateRandomAWB();
+                attempts++;
+                if (attempts > 100) {
+                    showToast('Error', 'Unable to generate unique AWB', 'error');
+                    return;
+                }
+            } while (awbs.find(a => a.code === newAWB));
+
+            const newOrder = {
+                code: newAWB,
+                productName: productName,
+                status: 'Order Received',
+                createdAt: new Date().toISOString()
+            };
+
+            awbs.push(newOrder);
+            localStorage.setItem('303_awbs', JSON.stringify(awbs));
+
+            document.getElementById('productName').value = '';
+            loadAWBTable();
+            loadOwnerStats();
+            showToast('Success', `AWB created: ${newAWB}`, 'success');
+        }
+
+        function loadAWBTable() {
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const tbody = document.getElementById('awbTableBody');
+
+            if (awbs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center" style="padding: 2rem; color: rgba(255,255,255,0.5);">
+                            No orders yet. Create your first AWB!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = '';
+            awbs.reverse().forEach(awb => {
+                const date = new Date(awb.createdAt).toLocaleDateString();
+                html += `
+                    <tr data-awb="${awb.code}" data-status="${awb.status}">
+                        <td><strong>${awb.code}</strong></td>
+                        <td>${awb.productName}</td>
+                        <td><span class="status-badge ${getStatusClass(awb.status)}">${awb.status}</span></td>
+                        <td>${date}</td>
+                        <td class="table-actions">
+                            <button class="btn btn-secondary btn-small" onclick="openUpdateStatus('${awb.code}')">
+                                Update
+                            </button>
+                            <button class="btn btn-secondary btn-small" onclick="openEditAwb('${awb.code}')">
+                                Edit
+                            </button>
+                            <button class="btn btn-danger btn-small" onclick="deleteAwb('${awb.code}')">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function filterAWBTable() {
+            const searchValue = document.getElementById('searchAWB').value.toLowerCase();
+            const filterValue = document.getElementById('filterStatus').value;
+            const rows = document.querySelectorAll('#awbTableBody tr[data-awb]');
+
+            rows.forEach(row => {
+                const awbCode = row.getAttribute('data-awb').toLowerCase();
+                const status = row.getAttribute('data-status');
+                
+                const matchesSearch = awbCode.includes(searchValue) || searchValue === '';
+                const matchesFilter = status === filterValue || filterValue === '';
+
+                if (matchesSearch && matchesFilter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function openUpdateStatus(awbCode) {
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const order = awbs.find(a => a.code === awbCode);
+
+            if (order) {
+                currentEditAwb = awbCode;
+                document.getElementById('updateAwbCode').value = order.code;
+                document.getElementById('updateProductName').value = order.productName;
+                document.getElementById('updateStatus').value = order.status.startsWith('Order ') ? order.status : 'custom';
+                
+                if (!order.status.startsWith('Order ')) {
+                    document.getElementById('customStatusGroup').classList.remove('hidden');
+                    document.getElementById('customStatusInput').value = order.status;
+                }
+                
+                openModal('updateStatusModal');
+            }
+        }
+
+        document.getElementById('updateStatus').addEventListener('change', (e) => {
+            if (e.target.value === 'custom') {
+                document.getElementById('customStatusGroup').classList.remove('hidden');
+            } else {
+                document.getElementById('customStatusGroup').classList.add('hidden');
+            }
+        });
+
+        function saveStatusUpdate() {
+            let newStatus = document.getElementById('updateStatus').value;
+            
+            if (newStatus === 'custom') {
+                newStatus = document.getElementById('customStatusInput').value.trim();
+                if (!newStatus) {
+                    showToast('Error', 'Please enter custom status', 'error');
+                    return;
+                }
+            }
+
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const orderIndex = awbs.findIndex(a => a.code === currentEditAwb);
+
+            if (orderIndex !== -1) {
+                awbs[orderIndex].status = newStatus;
+                localStorage.setItem('303_awbs', JSON.stringify(awbs));
+                loadAWBTable();
+                loadOwnerStats();
+                closeModal('updateStatusModal');
+                showToast('Success', 'Status updated successfully!', 'success');
+            }
+        }
+
+        function openEditAwb(awbCode) {
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const order = awbs.find(a => a.code === awbCode);
+
+            if (order) {
+                currentEditAwb = awbCode;
+                document.getElementById('editAwbCode').value = order.code;
+                document.getElementById('editProductName').value = order.productName;
+                openModal('editAwbModal');
+            }
+        }
+
+        function saveAwbEdit() {
+            const newCode = document.getElementById('editAwbCode').value.trim();
+            const newProduct = document.getElementById('editProductName').value.trim();
+
+            if (!newCode || !newProduct) {
+                showToast('Error', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            if (newCode.length !== 10 || isNaN(newCode)) {
+                showToast('Error', 'AWB code must be 10 digits', 'error');
+                return;
+            }
+
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            
+            // Check if new code already exists (and it's not the current one)
+            if (newCode !== currentEditAwb && awbs.find(a => a.code === newCode)) {
+                showToast('Error', 'AWB code already exists', 'error');
+                return;
+            }
+
+            const orderIndex = awbs.findIndex(a => a.code === currentEditAwb);
+            if (orderIndex !== -1) {
+                awbs[orderIndex].code = newCode;
+                awbs[orderIndex].productName = newProduct;
+                localStorage.setItem('303_awbs', JSON.stringify(awbs));
+                loadAWBTable();
+                closeModal('editAwbModal');
+                showToast('Success', 'AWB updated successfully!', 'success');
+            }
+        }
+
+        function deleteAwb(awbCode) {
+            if (!confirm(`Are you sure you want to delete AWB ${awbCode}?`)) {
+                return;
+            }
+
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const filtered = awbs.filter(a => a.code !== awbCode);
+            localStorage.setItem('303_awbs', JSON.stringify(filtered));
+            loadAWBTable();
+            loadOwnerStats();
+            showToast('Success', 'AWB deleted successfully', 'success');
+        }
+
+        function loadOwnerStats() {
+            const awbs = JSON.parse(localStorage.getItem('303_awbs') || '[]');
+            const supportRequests = JSON.parse(localStorage.getItem('303_support') || '[]');
+
+            document.getElementById('totalOrders').textContent = awbs.length;
+            document.getElementById('pendingOrders').textContent = 
+                awbs.filter(a => a.status === 'Order Pending').length;
+            document.getElementById('deliveredOrders').textContent = 
+                awbs.filter(a => a.status === 'Order Delivered').length;
+            document.getElementById('supportRequests').textContent = supportRequests.length;
+        }
+
+        // ============================================
+        // SUPPORT CENTER
+        // ============================================
+
+        function submitSupportRequest() {
+            const name = document.getElementById('supportName').value.trim();
+            const email = document.getElementById('supportEmail').value.trim();
+            const message = document.getElementById('supportMessage').value.trim();
+
+            if (!name || !email || !message) {
+                showToast('Error', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            const requests = JSON.parse(localStorage.getItem('303_support') || '[]');
+            
+            const newRequest = {
+                id: Date.now().toString(),
+                name,
+                email,
+                message,
+                createdAt: new Date().toISOString()
+            };
+
+            requests.push(newRequest);
+            localStorage.setItem('303_support', JSON.stringify(requests));
+
+            document.getElementById('supportName').value = '';
+            document.getElementById('supportEmail').value = '';
+            document.getElementById('supportMessage').value = '';
+
+            closeModal('supportModal');
+            showToast('Success', 'Support request submitted!', 'success');
+            loadOwnerStats();
+        }
+
+        function loadSupportRequests() {
+            const requests = JSON.parse(localStorage.getItem('303_support') || '[]');
+            const container = document.getElementById('supportRequestsList');
+
+            if (requests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <p>No support requests yet</p>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            requests.reverse().forEach(req => {
+                const date = new Date(req.createdAt).toLocaleString();
+                html += `
+                    <div class="support-item">
+                        <div class="support-header">
+                            <div>
+                                <h4>${req.name}</h4>
+                                <p>${req.email}</p>
+                            </div>
+                            <div class="support-date">${date}</div>
+                        </div>
+                        <div class="support-message">${req.message}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ============================================
+        // DASHBOARD
+        // ============================================
+
+        function loadDashboard() {
+            const dashboardContent = document.getElementById('dashboardContent');
+            const history = JSON.parse(localStorage.getItem(`303_history_${currentUser.email}`) || '[]');
+
+            let html = `
+                <div style="background: rgba(26, 26, 46, 0.6); border: 1px solid rgba(88, 101, 242, 0.2); border-radius: 20px; padding: 2rem; margin-bottom: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem;">Account Information</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 0.5rem;">
+                        <strong>Username:</strong> ${currentUser.username}
+                    </p>
+                    <p style="color: rgba(255, 255, 255, 0.7);">
+                        <strong>Email:</strong> ${currentUser.email}
+                    </p>
+                </div>
+
+                <div style="background: rgba(26, 26, 46, 0.6); border: 1px solid rgba(88, 101, 242, 0.2); border-radius: 20px; padding: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Quick Stats</h3>
+                    <p style="color: rgba(255, 255, 255, 0.7);">
+                        <strong>Tracked Orders:</strong> ${history.length}
+                    </p>
+                </div>
+            `;
+
+            dashboardContent.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
