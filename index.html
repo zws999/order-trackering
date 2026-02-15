@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Tracker - Premium Dashboard</title>
+    <style>
+        /* ==================== GLOBAL RESET ==================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ==================== ROOT VARIABLES ==================== */
+        :root {
+            --primary-gradient: linear-gradient(135deg, #5865f2 0%, #7289da 100%);
+            --secondary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gold-gradient: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+            --success-gradient: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+            --error-gradient: linear-gradient(135deg, #f44336 0%, #e57373 100%);
+            --glass-bg: rgba(30, 27, 60, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #b9bbbe;
+            --dark-bg: rgba(15, 12, 41, 0.6);
+        }
+
+        /* ==================== BASE STYLES ==================== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #0f0c29 0%, #1a1438 35%, #24243e 100%);
+            background-attachment: fixed;
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ==================== ANIMATED BACKGROUND ==================== */
+        .stars-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .stars-background::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background-image: 
+                radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 60% 70%, rgba(88, 101, 242, 0.4), transparent),
+                radial-gradient(1px 1px at 50% 50%, rgba(118, 75, 162, 0.3), transparent),
+                radial-gradient(1px 1px at 80% 10%, rgba(255, 255, 255, 0.2), transparent),
+                radial-gradient(2px 2px at 90% 60%, rgba(88, 101, 242, 0.3), transparent);
+            background-size: 200px 200px, 300px 300px, 150px 150px, 250px 250px, 350px 350px;
+            animation: starsMove 60s linear infinite;
+        }
+
+        @keyframes starsMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(-50px, -50px); }
+        }
+
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .glow-orb-1 {
+            width: 400px;
+            height: 400px;
+            background: #5865f2;
+            top: -100px;
+            left: -100px;
+        }
+
+        .glow-orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #764ba2;
+            bottom: -150px;
+            right: -150px;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -50px) scale(1.1); }
+            66% { transform: translate(-30px, 30px) scale(0.9); }
+        }
+
+        /* ==================== HEADER ==================== */
+        header {
+            padding: 25px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(20px);
+            background: var(--dark-bg);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 800;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            filter: drop-shadow(0 0 10px rgba(88, 101, 242, 0.5));
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            background: var(--primary-gradient);
+            padding: 2px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #2c2f33;
+        }
+
+        .user-avatar:hover {
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 0 25px rgba(88, 101, 242, 0.6);
+        }
+
+        .user-avatar::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 14px;
+            height: 14px;
+            background: #43b581;
+            border-radius: 50%;
+            border: 2px solid #0f0c29;
+        }
+
+        .connect-button {
+            padding: 12px 28px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(88, 101, 242, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .connect-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .connect-button:hover::before {
+            left: 100%;
+        }
+
+        .connect-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 30px rgba(88, 101, 242, 0.6);
+        }
+
+        /* ==================== PROFILE DROPDOWN ==================== */
+        .profile-dropdown {
+            position: absolute;
+            top: 70px;
+            right: 0;
+            background: rgba(30, 27, 60, 0.98);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 250px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-15px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+        }
+
+        .profile-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-bottom: 8px solid rgba(30, 27, 60, 0.98);
+        }
+
+        .profile-info {
+            padding: 15px;
+            border-bottom: 1px solid var(--glass-border);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .profile-info img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            margin-bottom: 12px;
+            border: 3px solid #5865f2;
+        }
+
+        .profile-name {
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .logout-button {
+            width: 100%;
+            padding: 12px;
+            background: var(--error-gradient);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .logout-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(244, 67, 54, 0.5);
+        }
+
+        /* ==================== MAIN CONTAINER ==================== */
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 80px 30px;
+        }
+
+        /* ==================== HERO SECTION ==================== */
+        .hero-section {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-title {
+            font-size: 58px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ==================== MENU CARDS GRID ==================== */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 35px;
+            margin-bottom: 50px;
+        }
+
+        .menu-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 45px 35px;
+            cursor: pointer;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .menu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .menu-card:hover::before {
+            opacity: 0.1;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(88, 101, 242, 0.6);
+            box-shadow: 0 25px 70px rgba(88, 101, 242, 0.4);
+        }
+
+        .menu-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .menu-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 5px 15px rgba(88, 101, 242, 0.4));
+        }
+
+        .card-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
+        }
+
+        .card-description {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ==================== OWNER CARD SPECIAL STYLING ==================== */
+        .owner-card {
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 237, 78, 0.05) 100%);
+        }
+
+        .owner-card::before {
+            background: var(--gold-gradient);
+        }
+
+        .owner-card:hover {
+            border-color: rgba(255, 215, 0, 0.7);
+            box-shadow: 0 25px 70px rgba(255, 215, 0, 0.3);
+        }
+
+        .owner-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--gold-gradient);
+            color: #000;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            z-index: 2;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-container {
+            background: rgba(30, 27, 60, 0.98);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 45px;
+            max-width: 550px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.7);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            font-weight: 800;
+            background: var(--secondary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-secondary);
+            font-size: 32px;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        /* ==================== FORMS ==================== */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px 18px;
+            background: var(--dark-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #5865f2;
+            box-shadow: 0 0 25px rgba(88, 101, 242, 0.4);
+            background: rgba(15, 12, 41, 0.8);
+        }
+
+        .form-input::placeholder {
+            color: rgba(185, 187, 190, 0.5);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 15px 18px;
+            background: var(--dark-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #5865f2;
+            box-shadow: 0 0 25px rgba(88, 101, 242, 0.4);
+        }
+
+        .form-select option {
+            background: #1a1438;
+            color: white;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(88, 101, 242, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 10px 35px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-google {
+            background: white;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 600;
+        }
+
+        .btn-google:hover {
+            background: #f0f0f0;
+            box-shadow: 0 10px 35px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-small {
+            padding: 10px 20px;
+            font-size: 14px;
+            width: auto;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        /* ==================== DIVIDER ==================== */
+        .divider {
+            text-align: center;
+            margin: 30px 0;
+            color: var(--text-secondary);
+            position: relative;
+            font-size: 14px;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 42%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--glass-border), transparent);
+        }
+
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .text-link {
+            background: none;
+            border: none;
+            color: #5865f2;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
+            margin-top: 20px;
+            display: block;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .text-link:hover {
+            color: #7289da;
+        }
+
+        /* ==================== PROFILE PICTURE UPLOAD ==================== */
+        .avatar-upload {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            border: 4px solid #5865f2;
+            object-fit: cover;
+            display: block;
+            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 12px 24px;
+            background: rgba(88, 101, 242, 0.2);
+            border: 2px dashed #5865f2;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .upload-label:hover {
+            background: rgba(88, 101, 242, 0.3);
+            border-color: #7289da;
+            transform: scale(1.05);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        /* ==================== TOAST NOTIFICATIONS ==================== */
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            padding: 18px 28px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            min-width: 300px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: var(--success-gradient);
+        }
+
+        .toast.error {
+            background: var(--error-gradient);
+        }
+
+        .toast.info {
+            background: var(--primary-gradient);
+        }
+
+        .toast-icon {
+            font-size: 24px;
+        }
+
+        /* ==================== ORDER STATUS DISPLAY ==================== */
+        .order-result {
+            margin-top: 35px;
+            animation: slideInUp 0.5s ease;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .order-card {
+            background: var(--dark-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .order-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-gradient);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 25px;
+        }
+
+        .order-product {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .order-awb {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-family: 'Courier New', monospace;
+        }
+
+        .order-awb-code {
+            color: #5865f2;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-received {
+            background: rgba(33, 150, 243, 0.2);
+            color: #64b5f6;
+            border: 2px solid #2196f3;
+        }
+
+        .status-waiting {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ffb74d;
+            border: 2px solid #ff9800;
+        }
+
+        .status-delivered {
+            background: rgba(76, 175, 80, 0.2);
+            color: #81c784;
+            border: 2px solid #4caf50;
+        }
+
+        .progress-container {
+            margin-top: 25px;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ==================== ERROR MESSAGE ==================== */
+        .error-card {
+            background: var(--dark-bg);
+            border: 2px solid rgba(244, 67, 54, 0.5);
+            border-radius: 18px;
+            padding: 30px;
+            text-align: center;
+            animation: shake 0.6s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-12px); }
+            50% { transform: translateX(12px); }
+            75% { transform: translateX(-8px); }
+        }
+
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f44336;
+            margin-bottom: 10px;
+        }
+
+        .error-description {
+            color: var(--text-secondary);
+            font-size: 15px;
+        }
+
+        /* ==================== OWNER DASHBOARD ==================== */
+        .awb-list {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .awb-item {
+            background: var(--dark-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .awb-item:hover {
+            border-color: rgba(88, 101, 242, 0.6);
+            background: rgba(88, 101, 242, 0.1);
+            transform: translateX(5px);
+        }
+
+        .awb-details {
+            flex: 1;
+        }
+
+        .awb-code {
+            font-family: 'Courier New', monospace;
+            font-weight: 800;
+            color: #5865f2;
+            font-size: 18px;
+            margin-bottom: 6px;
+        }
+
+        .awb-product {
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .awb-status {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .awb-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* ==================== LOADING SPINNER ==================== */
+        .loading-spinner {
+            display: inline-block;
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ==================== SCROLLBAR STYLING ==================== */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 12, 41, 0.5);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            border: 2px solid rgba(15, 12, 41, 0.5);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-gradient);
+        }
+
+        /* ==================== RESPONSIVE DESIGN ==================== */
+        @media (max-width: 768px) {
+            header {
+                padding: 20px 25px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            .hero-title {
+                font-size: 42px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+
+            .modal-container {
+                padding: 35px 25px;
+            }
+
+            .modal-title {
+                font-size: 26px;
+            }
+
+            .toast {
+                right: 15px;
+                left: 15px;
+                min-width: auto;
+            }
+
+            .container {
+                padding: 50px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 36px;
+            }
+
+            .card-title {
+                font-size: 24px;
+            }
+
+            .awb-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .awb-actions {
+                width: 100%;
+            }
+
+            .btn-small {
+                width: 100%;
+            }
+        }
+
+        /* ==================== UTILITY CLASSES ==================== */
+        .mt-20 { margin-top: 20px; }
+        .mb-20 { margin-bottom: 20px; }
+        .text-center { text-align: center; }
+        .text-muted { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="stars-background"></div>
+    <div class="glow-orb glow-orb-1"></div>
+    <div class="glow-orb glow-orb-2"></div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="url(#logoGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                <line x1="12" y1="22.08" x2="12" y2="12"/>
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea"/>
+                        <stop offset="100%" style="stop-color:#764ba2"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            Order Tracker
+        </div>
+        <div class="user-section" id="userSection">
+            <!-- Populated by JavaScript -->
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="hero-title">Premium Order Tracking</h1>
+            <p class="hero-subtitle">Track your orders in real-time with our advanced, secure tracking system powered by cutting-edge technology</p>
+        </div>
+
+        <!-- Menu Cards Grid -->
+        <div class="menu-grid">
+            <!-- Order Tracking Card -->
+            <div class="menu-card" onclick="app.openOrderTracking()">
+                <svg class="card-icon" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="32" r="30" stroke="url(#cardGrad1)" stroke-width="2.5"/>
+                    <path d="M22 32 L28 38 L42 24" stroke="url(#cardGrad1)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <circle cx="32" cy="32" r="20" stroke="url(#cardGrad1)" stroke-width="1" opacity="0.3"/>
+                    <defs>
+                        <linearGradient id="cardGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#5865f2"/>
+                            <stop offset="100%" style="stop-color:#7289da"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h2 class="card-title">Order Tracking</h2>
+                <p class="card-description">Track your order status instantly with your unique AWB tracking code</p>
+            </div>
+
+            <!-- Account Card -->
+            <div class="menu-card" onclick="app.openAccount()">
+                <svg class="card-icon" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="32" r="30" stroke="url(#cardGrad2)" stroke-width="2.5"/>
+                    <circle cx="32" cy="26" r="9" stroke="url(#cardGrad2)" stroke-width="2.5"/>
+                    <path d="M16 48 C16 40 22 36 32 36 C42 36 48 40 48 48" stroke="url(#cardGrad2)" stroke-width="2.5" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="cardGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#667eea"/>
+                            <stop offset="100%" style="stop-color:#764ba2"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h2 class="card-title">Account</h2>
+                <p class="card-description">Create a new account or sign in to access your personalized dashboard</p>
+            </div>
+
+            <!-- Owner Access Card -->
+            <div class="menu-card owner-card" onclick="app.openOwnerAccess()">
+                <span class="owner-badge">PREMIUM</span>
+                <svg class="card-icon" viewBox="0 0 64 64" fill="none">
+                    <circle cx="32" cy="32" r="30" stroke="url(#cardGrad3)" stroke-width="2.5"/>
+                    <rect x="22" y="28" width="20" height="16" rx="2" stroke="url(#cardGrad3)" stroke-width="2.5"/>
+                    <path d="M25 28 V22 C25 18 28 15 32 15 C36 15 39 18 39 22 V28" stroke="url(#cardGrad3)" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="32" cy="36" r="2.5" fill="url(#cardGrad3)"/>
+                    <line x1="32" y1="38.5" x2="32" y2="42" stroke="url(#cardGrad3)" stroke-width="2.5" stroke-linecap="round"/>
+                    <defs>
+                        <linearGradient id="cardGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffd700"/>
+                            <stop offset="100%" style="stop-color:#ffed4e"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h2 class="card-title">Owner Access</h2>
+                <p class="card-description">Premium management panel for administrators and order managers</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal" onclick="app.closeModalOnBackdrop(event)">
+        <div class="modal-container" id="modalContent">
+            <!-- Content populated by JavaScript -->
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span id="toastMessage"></span>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // ==================== APPLICATION STATE & DATA ====================
+        const app = {
+            // Data storage using localStorage
+            storage: {
+                users: JSON.parse(localStorage.getItem('orderTracker_users') || '[]'),
+                awbs: JSON.parse(localStorage.getItem('orderTracker_awbs') || '[]'),
+                currentUser: JSON.parse(localStorage.getItem('orderTracker_currentUser') || 'null'),
+                ownerSession: JSON.parse(localStorage.getItem('orderTracker_ownerSession') || 'false'),
+
+                save() {
+                    localStorage.setItem('orderTracker_users', JSON.stringify(this.users));
+                    localStorage.setItem('orderTracker_awbs', JSON.stringify(this.awbs));
+                    localStorage.setItem('orderTracker_currentUser', JSON.stringify(this.currentUser));
+                    localStorage.setItem('orderTracker_ownerSession', JSON.stringify(this.ownerSession));
+                }
+            },
+
+            // Owner credentials
+            ownerCredentials: {
+                username: 'owner',
+                password: 'admin123'
+            },
+
+            // ==================== INITIALIZATION ====================
+            init() {
+                this.updateUserSection();
+                // Close dropdown when clicking outside
+                document.addEventListener('click', (e) => {
+                    const dropdown = document.querySelector('.profile-dropdown');
+                    const userAvatar = document.querySelector('.user-avatar');
+                    if (dropdown && !userAvatar?.contains(e.target)) {
+                        dropdown.classList.remove('show');
+                    }
+                });
+            },
+
+            // ==================== UTILITY FUNCTIONS ====================
+            showToast(message, type = 'info', icon = 'ℹ️') {
+                const toast = document.getElementById('toast');
+                const toastIcon = document.getElementById('toastIcon');
+                const toastMessage = document.getElementById('toastMessage');
+
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    info: 'ℹ️'
+                };
+
+                toastIcon.textContent = icons[type] || icon;
+                toastMessage.textContent = message;
+                toast.className = `toast ${type}`;
+                toast.classList.add('show');
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3500);
+            },
+
+            openModal(content) {
+                const modal = document.getElementById('modal');
+                const modalContent = document.getElementById('modalContent');
+                modalContent.innerHTML = content;
+                modal.classList.add('active');
+            },
+
+            closeModal() {
+                const modal = document.getElementById('modal');
+                modal.classList.remove('active');
+            },
+
+            closeModalOnBackdrop(event) {
+                if (event.target.id === 'modal') {
+                    this.closeModal();
+                }
+            },
+
+            generateAWB() {
+                let awb;
+                let attempts = 0;
+                do {
+                    awb = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+                    attempts++;
+                } while (this.storage.awbs.some(item => item.awb === awb) && attempts < 100);
+                return awb;
+            },
+
+            updateUserSection() {
+                const userSection = document.getElementById('userSection');
+                
+                if (this.storage.currentUser) {
+                    const user = this.storage.currentUser;
+                    const avatarSrc = user.avatar || this.generateDefaultAvatar(user.name);
+                    
+                    userSection.innerHTML = `
+                        <div class="user-avatar" onclick="app.toggleProfileDropdown(event)">
+                            <img src="${avatarSrc}" alt="${user.name}">
+                        </div>
+                        <div class="profile-dropdown">
+                            <div class="profile-info">
+                                <img src="${avatarSrc}" alt="${user.name}">
+                                <div class="profile-name">${user.name}</div>
+                                <div class="profile-email">${user.email}</div>
+                            </div>
+                            <button class="logout-button" onclick="app.logout()">Logout</button>
+                        </div>
+                    `;
+                } else {
+                    userSection.innerHTML = `
+                        <button class="connect-button" onclick="app.openAccount()">Connect</button>
+                    `;
+                }
+            },
+
+            generateDefaultAvatar(name) {
+                const initial = name.charAt(0).toUpperCase();
+                return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect fill='%235865f2' width='100' height='100'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-size='45' font-weight='bold' fill='white'%3E${initial}%3C/text%3E%3C/svg%3E`;
+            },
+
+            toggleProfileDropdown(event) {
+                event.stopPropagation();
+                const dropdown = document.querySelector('.profile-dropdown');
+                dropdown?.classList.toggle('show');
+            },
+
+            logout() {
+                this.storage.currentUser = null;
+                this.storage.save();
+                this.updateUserSection();
+                this.showToast('Successfully logged out', 'info', '👋');
+                this.closeModal();
+            },
+
+            // ==================== ORDER TRACKING ====================
+            openOrderTracking() {
+                if (!this.storage.currentUser) {
+                    this.openModal(`
+                        <div class="modal-header">
+                            <h2 class="modal-title">Authentication Required</h2>
+                            <button class="modal-close" onclick="app.closeModal()">×</button>
+                        </div>
+                        <div class="text-center mb-20">
+                            <div style="font-size: 64px; margin-bottom: 20px;">🔒</div>
+                            <p class="text-muted" style="font-size: 16px; line-height: 1.6;">
+                                You must connect to your account to track your order.
+                            </p>
+                        </div>
+                        <button class="btn" onclick="app.openAccount()">Connect Now</button>
+                    `);
+                    return;
+                }
+
+                this.openModal(`
+                    <div class="modal-header">
+                        <h2 class="modal-title">Track Your Order</h2>
+                        <button class="modal-close" onclick="app.closeModal()">×</button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">AWB Tracking Code</label>
+                        <input type="text" 
+                               class="form-input" 
+                               id="awbInput" 
+                               placeholder="Enter your 10-digit AWB code"
+                               maxlength="10"
+                               onkeypress="if(event.key==='Enter') app.trackOrder()">
+                    </div>
+                    <button class="btn" onclick="app.trackOrder()">
+                        Track Order
+                    </button>
+                    <div id="orderResult"></div>
+                `);
+
+                // Focus on input
+                setTimeout(() => {
+                    document.getElementById('awbInput')?.focus();
+                }, 100);
+            },
+
+            trackOrder() {
+                const awbInput = document.getElementById('awbInput');
+                const resultDiv = document.getElementById('orderResult');
+                const awbCode = awbInput.value.trim();
+
+                if (!awbCode || awbCode.length !== 10) {
+                    this.showToast('Please enter a valid 10-digit AWB code', 'error');
+                    awbInput.focus();
+                    return;
+                }
+
+                const order = this.storage.awbs.find(item => item.awb === awbCode);
+
+                if (!order) {
+                    resultDiv.innerHTML = `
+                        <div class="order-result">
+                            <div class="error-card">
+                                <div class="error-icon">❌</div>
+                                <div class="error-title">Invalid AWB Code</div>
+                                <div class="error-description">
+                                    The AWB code you entered does not exist in our system. 
+                                    Please verify the code and try again.
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    this.showToast('Invalid AWB code', 'error');
+                    return;
+                }
+
+                const statusConfig = {
+                    'Comanda a fost primita': { 
+                        class: 'status-received', 
+                        progress: 33, 
+                        icon: '📦',
+                        emoji: '📦'
+                    },
+                    'Comanda este in asteptare': { 
+                        class: 'status-waiting', 
+                        progress: 66, 
+                        icon: '⏳',
+                        emoji: '⏳'
+                    },
+                    'Comanda a fost livrata': { 
+                        class: 'status-delivered', 
+                        progress: 100, 
+                        icon: '✅',
+                        emoji: '✅'
+                    }
+                };
+
+                const status = statusConfig[order.status];
+
+                resultDiv.innerHTML = `
+                    <div class="order-result">
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <div class="order-product">${order.productName}</div>
+                                    <div class="order-awb">
+                                        AWB: <span class="order-awb-code">${order.awb}</span>
+                                    </div>
+                                </div>
+                                <div class="status-badge ${status.class}">
+                                    <span>${status.emoji}</span>
+                                    <span>${order.status}</span>
+                                </div>
+                            </div>
+                            <div class="progress-container">
+                                <div class="progress-bar-bg">
+                                    <div class="progress-bar-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Animate progress bar
+                setTimeout(() => {
+                    const progressBar = resultDiv.querySelector('.progress-bar-fill');
+                    if (progressBar) {
+                        progressBar.style.width = status.progress + '%';
+                    }
+                }, 100);
+
+                this.showToast('Order found successfully!', 'success');
+            },
+
+            // ==================== ACCOUNT MANAGEMENT ====================
+            openAccount() {
+                this.openModal(`
+                    <div class="modal-header">
+                        <h2 class="modal-title">Account</h2>
+                        <button class="modal-close" onclick="app.closeModal()">×</button>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-bottom: 30px;">
+                        <button class="btn" onclick="app.showSignIn()">Sign In</button>
+                        <button class="btn btn-secondary" onclick="app.showSignUp()">Create Account</button>
+                    </div>
+                    <div id="accountForm"></div>
+                `);
+                this.showSignIn();
+            },
+
+            showSignIn() {
+                document.getElementById('accountForm').innerHTML = `
+                    <div style="animation: fadeInUp 0.4s;">
+                        <div class="divider">Sign in with email</div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" 
+                                   class="form-input" 
+                                   id="loginEmail" 
+                                   placeholder="your.email@example.com"
+                                   onkeypress="if(event.key==='Enter') document.getElementById('loginPassword').focus()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" 
+                                   class="form-input" 
+                                   id="loginPassword" 
+                                   placeholder="Enter your password"
+                                   onkeypress="if(event.key==='Enter') app.signIn()">
+                        </div>
+                        <button class="btn" onclick="app.signIn()">Sign In</button>
+                        <div class="divider">or</div>
+                        <button class="btn btn-google" onclick="app.signInWithGoogle()">
+                            <svg width="20" height="20" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                            Continue with Google
+                        </button>
+                        <button class="text-link" onclick="app.showSignUp()">
+                            Don't have an account? Create one
+                        </button>
+                    </div>
+                `;
+                setTimeout(() => document.getElementById('loginEmail')?.focus(), 100);
+            },
+
+            showSignUp() {
+                document.getElementById('accountForm').innerHTML = `
+                    <div style="animation: fadeInUp 0.4s;">
+                        <div class="avatar-upload">
+                            <img id="avatarPreview" 
+                                 class="avatar-preview" 
+                                 src="${this.generateDefaultAvatar('+')}" 
+                                 alt="Avatar">
+                            <label class="upload-label">
+                                📸 Upload Profile Picture
+                                <input type="file" 
+                                       class="file-input" 
+                                       id="avatarFile" 
+                                       accept="image/*" 
+                                       onchange="app.handleAvatarUpload(event)">
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="signupName" 
+                                   placeholder="Enter your full name"
+                                   onkeypress="if(event.key==='Enter') document.getElementById('signupEmail').focus()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" 
+                                   class="form-input" 
+                                   id="signupEmail" 
+                                   placeholder="your.email@example.com"
+                                   onkeypress="if(event.key==='Enter') document.getElementById('signupPassword').focus()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" 
+                                   class="form-input" 
+                                   id="signupPassword" 
+                                   placeholder="Create a strong password"
+                                   onkeypress="if(event.key==='Enter') app.signUp()">
+                        </div>
+                        <button class="btn" onclick="app.signUp()">Create Account</button>
+                        <button class="text-link" onclick="app.showSignIn()">
+                            Already have an account? Sign in
+                        </button>
+                    </div>
+                `;
+                setTimeout(() => document.getElementById('signupName')?.focus(), 100);
+            },
+
+            handleAvatarUpload(event) {
+                const file = event.target.files[0];
+                if (!file) return;
+
+                if (!file.type.startsWith('image/')) {
+                    this.showToast('Please select an image file', 'error');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('avatarPreview').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            },
+
+            signIn() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value;
+
+                if (!email || !password) {
+                    this.showToast('Please fill in all fields', 'error');
+                    return;
+                }
+
+                const user = this.storage.users.find(u => 
+                    u.email.toLowerCase() === email.toLowerCase() && u.password === password
+                );
+
+                if (!user) {
+                    this.showToast('Invalid email or password', 'error');
+                    return;
+                }
+
+                this.storage.currentUser = {
+                    name: user.name,
+                    email: user.email,
+                    avatar: user.avatar
+                };
+                this.storage.save();
+                this.updateUserSection();
+                this.closeModal();
+                this.showToast(`Welcome back, ${user.name}!`, 'success', '👋');
+            },
+
+            signInWithGoogle() {
+                const name = prompt('Enter your name (Google Sign-In Simulation):');
+                if (!name) {
+                    this.showToast('Sign-in cancelled', 'info');
+                    return;
+                }
+
+                const email = prompt('Enter your email (Google Sign-In Simulation):');
+                if (!email) {
+                    this.showToast('Sign-in cancelled', 'info');
+                    return;
+                }
+
+                // Check if user exists
+                let user = this.storage.users.find(u => u.email.toLowerCase() === email.toLowerCase());
+                
+                if (!user) {
+                    // Create new user
+                    user = {
+                        name: name,
+                        email: email,
+                        password: 'google-oauth-' + Date.now(),
+                        avatar: null
+                    };
+                    this.storage.users.push(user);
+                }
+
+                this.storage.currentUser = {
+                    name: user.name,
+                    email: user.email,
+                    avatar: user.avatar
+                };
+                this.storage.save();
+                this.updateUserSection();
+                this.closeModal();
+                this.showToast(`Welcome, ${user.name}!`, 'success', '🎉');
+            },
+
+            signUp() {
+                const name = document.getElementById('signupName').value.trim();
+                const email = document.getElementById('signupEmail').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const avatarPreview = document.getElementById('avatarPreview').src;
+
+                if (!name || !email || !password) {
+                    this.showToast('Please fill in all fields', 'error');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    this.showToast('Password must be at least 6 characters', 'error');
+                    return;
+                }
+
+                if (this.storage.users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                    this.showToast('Email already exists', 'error');
+                    return;
+                }
+
+                const newUser = {
+                    name: name,
+                    email: email,
+                    password: password,
+                    avatar: avatarPreview.startsWith('data:image') && !avatarPreview.includes('%2B') ? avatarPreview : null
+                };
+
+                this.storage.users.push(newUser);
+                this.storage.currentUser = {
+                    name: newUser.name,
+                    email: newUser.email,
+                    avatar: newUser.avatar
+                };
+                this.storage.save();
+                this.updateUserSection();
+                this.closeModal();
+                this.showToast('Account created successfully!', 'success', '🎉');
+            },
+
+            // ==================== OWNER ACCESS ====================
+            openOwnerAccess() {
+                if (this.storage.ownerSession) {
+                    this.showOwnerDashboard();
+                    return;
+                }
+
+                this.openModal(`
+                    <div class="modal-header">
+                        <h2 class="modal-title">🔐 Owner Access</h2>
+                        <button class="modal-close" onclick="app.closeModal()">×</button>
+                    </div>
+                    <div class="text-center mb-20">
+                        <div style="font-size: 64px; margin-bottom: 15px;">👑</div>
+                        <p class="text-muted" style="font-size: 15px;">
+                            Premium Management Panel
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" 
+                               class="form-input" 
+                               id="ownerUsername" 
+                               placeholder="Enter owner username"
+                               value="owner"
+                               onkeypress="if(event.key==='Enter') document.getElementById('ownerPassword').focus()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" 
+                               class="form-input" 
+                               id="ownerPassword" 
+                               placeholder="Enter owner password"
+                               value="admin123"
+                               onkeypress="if(event.key==='Enter') app.ownerLogin()">
+                    </div>
+                    <button class="btn" onclick="app.ownerLogin()">Access Dashboard</button>
+                    <p class="text-center text-muted" style="font-size: 12px; margin-top: 20px;">
+                        Default credentials: <strong>owner</strong> / <strong>admin123</strong>
+                    </p>
+                `);
+            },
+
+            ownerLogin() {
+                const username = document.getElementById('ownerUsername').value.trim();
+                const password = document.getElementById('ownerPassword').value;
+
+                if (username !== this.ownerCredentials.username || 
+                    password !== this.ownerCredentials.password) {
+                    this.showToast('Invalid owner credentials', 'error');
+                    return;
+                }
+
+                this.storage.ownerSession = true;
+                this.storage.save();
+                this.showToast('Owner access granted', 'success', '👑');
+                this.showOwnerDashboard();
+            },
+
+            ownerLogout() {
+                this.storage.ownerSession = false;
+                this.storage.save();
+                this.showToast('Owner logged out', 'info', '👋');
+                this.closeModal();
+            },
+
+            showOwnerDashboard() {
+                this.openModal(`
+                    <div class="modal-header">
+                        <h2 class="modal-title">👑 Owner Dashboard</h2>
+                        <button class="modal-close" onclick="app.closeModal()">×</button>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-bottom: 25px;">
+                        <button class="btn" onclick="app.showCreateAWB()">+ Create AWB</button>
+                        <button class="btn btn-secondary" onclick="app.ownerLogout()">Logout</button>
+                    </div>
+                    <div id="ownerDashboardContent">
+                        ${this.renderAWBList()}
+                    </div>
+                `);
+            },
+
+            renderAWBList() {
+                if (this.storage.awbs.length === 0) {
+                    return `
+                        <div class="text-center" style="padding: 60px 20px;">
+                            <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.5;">📦</div>
+                            <p class="text-muted">No AWB codes created yet.</p>
+                            <p class="text-muted" style="font-size: 14px; margin-top: 10px;">
+                                Click "Create AWB" to get started
+                            </p>
+                        </div>
+                    `;
+                }
+
+                const sortedAWBs = [...this.storage.awbs].sort((a, b) => 
+                    new Date(b.createdAt) - new Date(a.createdAt)
+                );
+
+                return `
+                    <div style="margin-bottom: 15px;">
+                        <strong>${this.storage.awbs.length}</strong> AWB Code${this.storage.awbs.length !== 1 ? 's' : ''}
+                    </div>
+                    <div class="awb-list">
+                        ${sortedAWBs.map(awb => `
+                            <div class="awb-item">
+                                <div class="awb-details">
+                                    <div class="awb-code">${awb.awb}</div>
+                                    <div class="awb-product">${awb.productName}</div>
+                                    <div class="awb-status">Status: ${awb.status}</div>
+                                </div>
+                                <div class="awb-actions">
+                                    <button class="btn btn-small" onclick="app.editAWBStatus('${awb.awb}')">
+                                        Update
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            },
+
+            showCreateAWB() {
+                document.getElementById('ownerDashboardContent').innerHTML = `
+                    <div style="animation: fadeInUp 0.4s;">
+                        <h3 style="font-size: 22px; margin-bottom: 25px; font-weight: 700;">
+                            Create New AWB
+                        </h3>
+                        <div class="form-group">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" 
+                                   class="form-input" 
+                                   id="productName" 
+                                   placeholder="Enter product name"
+                                   onkeypress="if(event.key==='Enter') app.createAWB()">
+                        </div>
+                        <button class="btn" onclick="app.createAWB()">Generate AWB</button>
+                        <button class="btn btn-secondary" onclick="app.showOwnerDashboard()">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+                `;
+                setTimeout(() => document.getElementById('productName')?.focus(), 100);
+            },
+
+            createAWB() {
+                const productName = document.getElementById('productName').value.trim();
+
+                if (!productName) {
+                    this.showToast('Please enter a product name', 'error');
+                    return;
+                }
+
+                const awb = this.generateAWB();
+                const newAWB = {
+                    awb: awb,
+                    productName: productName,
+                    status: 'Comanda a fost primita',
+                    createdAt: new Date().toISOString()
+                };
+
+                this.storage.awbs.push(newAWB);
+                this.storage.save();
+
+                this.showToast(`AWB ${awb} created successfully!`, 'success', '✅');
+                this.showOwnerDashboard();
+            },
+
+            editAWBStatus(awbCode) {
+                const awb = this.storage.awbs.find(a => a.awb === awbCode);
+
+                if (!awb) {
+                    this.showToast('AWB not found', 'error');
+                    return;
+                }
+
+                document.getElementById('ownerDashboardContent').innerHTML = `
+                    <div style="animation: fadeInUp 0.4s;">
+                        <h3 style="font-size: 22px; margin-bottom: 25px; font-weight: 700;">
+                            Update Order Status
+                        </h3>
+                        <div style="background: var(--dark-bg); padding: 25px; border-radius: 15px; margin-bottom: 25px; border: 1px solid var(--glass-border);">
+                            <div class="awb-code" style="font-size: 26px; margin-bottom: 12px;">
+                                ${awb.awb}
+                            </div>
+                            <div style="color: var(--text-primary); font-size: 18px; font-weight: 600;">
+                                ${awb.productName}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Select New Status</label>
+                            <select class="form-select" id="statusSelect">
+                                <option value="Comanda a fost primita" ${awb.status === 'Comanda a fost primita' ? 'selected' : ''}>
+                                    📦 Comanda a fost primita
+                                </option>
+                                <option value="Comanda este in asteptare" ${awb.status === 'Comanda este in asteptare' ? 'selected' : ''}>
+                                    ⏳ Comanda este in asteptare
+                                </option>
+                                <option value="Comanda a fost livrata" ${awb.status === 'Comanda a fost livrata' ? 'selected' : ''}>
+                                    ✅ Comanda a fost livrata
+                                </option>
+                            </select>
+                        </div>
+                        <button class="btn" onclick="app.updateAWBStatus('${awbCode}')">
+                            Save Changes
+                        </button>
+                        <button class="btn btn-secondary" onclick="app.showOwnerDashboard()">
+                            ← Back to Dashboard
+                        </button>
+                    </div>
+                `;
+            },
+
+            updateAWBStatus(awbCode) {
+                const newStatus = document.getElementById('statusSelect').value;
+                const awb = this.storage.awbs.find(a => a.awb === awbCode);
+
+                if (!awb) {
+                    this.showToast('AWB not found', 'error');
+                    return;
+                }
+
+                awb.status = newStatus;
+                awb.updatedAt = new Date().toISOString();
+                this.storage.save();
+
+                this.showToast('Status updated successfully!', 'success', '✅');
+                this.showOwnerDashboard();
+            }
+        };
+
+        // ==================== INITIALIZE APPLICATION ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
+</body>
+</html>
